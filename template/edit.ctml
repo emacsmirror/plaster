@@ -82,6 +82,10 @@
                 <input type="submit" @formaction="/api/plaster/new" value="Post" />
               </c:then>
               <c:else>
+                <c:when test="(plaster::permitted-p :edit *)">
+                  <!-- I hate the web. This is to prevent ENTER on the form fields hitting the Delete button -->
+                  <input type="submit" style="visibility:hidden" aria-hidden="true" @formaction="/api/plaster/edit" value="Save" />
+                </c:when>
                 <c:when test="(plaster::permitted-p :delete *)">
                   <input type="submit" @formaction="/api/plaster/delete" value="Delete" />
                 </c:when>
