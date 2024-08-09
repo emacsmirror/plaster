@@ -1,10 +1,6 @@
 (in-package #:org.shirakumo.radiance.plaster)
 
-(defparameter *spam-tests*
-  (with-open-file (s (make-pathname :name "spam" :type "txt" :defaults (asdf:system-relative-pathname :plaster "spam.txt")))
-    (loop for line = (read-line s NIL)
-          while line
-          collect (cl-ppcre:create-scanner line :case-insensitive-mode T))))
+(defparameter *spam-tests* ())
 
 (defparameter *captcha-words*
   #("endless" "knowledge" "wisdom" "quality" "quantity" "unknown" "speech"
@@ -14,6 +10,7 @@
     "negative" "positive"))
 
 (define-trigger radiance:startup ()
+  (reload-spam-tests)
   (defaulted-config (make-random-string) :captcha-sign-key))
 
 (defun encrypt-captcha-solution (solution)
@@ -46,3 +43,10 @@
 (defun text-spammy-p (text)
   (loop for test in *spam-tests*
         thereis (cl-ppcre:scan test text)))
+
+(defun reload-spam-tests ()
+  (setf *spam-tests*
+        (with-open-file (s (make-pathname :name "spam" :type "txt" :defaults (asdf:system-relative-pathname :plaster "spam.txt")))
+          (loop for line = (read-line s NIL)
+                while line
+                collect (cl-ppcre:create-scanner line :case-insensitive-mode T)))))
