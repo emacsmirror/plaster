@@ -9,10 +9,6 @@
     "great" "amazing" "something" "anything" "somewhere" "someone"
     "negative" "positive"))
 
-(define-trigger radiance:startup ()
-  (reload-spam-tests)
-  (defaulted-config (make-random-string) :captcha-sign-key))
-
 (defun encrypt-captcha-solution (solution)
   (cryptos:encrypt (format NIL "~a~a" (make-random-string 16) solution) (config :captcha-sign-key)))
 
@@ -50,3 +46,7 @@
           (loop for line = (read-line s NIL)
                 while line
                 collect (cl-ppcre:create-scanner line :case-insensitive-mode T)))))
+
+(define-trigger radiance:startup ()
+  (reload-spam-tests)
+  (defaulted-config (make-random-string) :captcha-sign-key))
