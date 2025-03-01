@@ -13,7 +13,7 @@
   `(call-with-password-protection
     (lambda () ,@body) ,paste ,password))
 
-(define-page edit "plaster/edit(?:/(.*))?" (:uri-groups (id) :clip "edit.ctml")
+(defun render-edit (id)
   (let* ((paste (if id
                     (ensure-paste id)
                     (dm:hull 'pastes)))
@@ -41,7 +41,7 @@
                           :captcha captcha
                           :captcha-solution captcha-solution)))))
 
-(define-page view "plaster/view/(.*)" (:uri-groups (id) :clip "view.ctml")
+(defun render-view (id)
   (let* ((paste (ensure-paste id))
          (parent (paste-parent paste)))
     (check-permission 'view paste)
@@ -56,13 +56,31 @@
                             :theme (or* (user:field "plaster-theme" (auth:current "anonymous"))
                                         "default"))))))
 
-(define-page raw "plaster/view/([^/]*)/raw" (:uri-groups (id))
+(defun render-raw (id)
   (let ((paste (ensure-paste id)))
     (check-permission 'view paste)
     (setf (header "X-Robots-Tag") "nofollow")
     (with-password-protection (paste)
       (setf (content-type *response*) "text/plain")
       (dm:field paste "text"))))
+
+(define-page edit "plaster/edit(?:/(.*))?" (:uri-groups (id) :clip "edit.ctml")
+  (render-edit id))
+
+(define-page view "plaster/view/(.*)" (:uri-groups (id) :clip "view.ctml")
+  (render-view id))
+
+(define-page raw "plaster/view/([^/]*)/raw" (:uri-groups (id))
+  (render-raw id))
+
+(define-page edit-new "plaster/^e(?:/(.*))?$" (:uri-groups (id) :clip "edit.ctml")
+  (render-edit (when id (from-secure-id id))))
+
+(define-page view-new "plaster/^v/(.*)$" (:uri-groups (id) :clip "view.ctml")
+  (render-view (from-secure-id id)))
+
+(define-page raw-new "plaster/^v/([^/]*)/raw$" (:uri-groups (id))
+  (render-raw (from-secure-id id)))
 
 (define-page list "plaster/list(?:/(.*))?" (:uri-groups (page) :clip "list.ctml")
   (check-permission 'list)

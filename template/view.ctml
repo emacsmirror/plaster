@@ -37,18 +37,18 @@
             <span class="type" lquery="(text type)">TYPE</span>
             <span style="display:none" class="theme" lquery="(text (** :theme))"/>
             <a rel="author" lquery="(text author)" @href="plaster/user/{0} author">AUTHOR</a>
-            <a rel="bookmark" @href="plaster/view/{0} _id"><time lquery="(time time)">2106.10.23</time></a>
+            <a rel="bookmark" @href="plaster/v/{0} (plaster::to-secure-id _id)"><time lquery="(time time)">2106.10.23</time></a>
           </header>
           <div name="text" class="text" placeholder="Paste something here" readonly
                lquery="(text text)"></div>
           <nav class="actions">
             <c:when test="(plaster::permitted-p :new)">
-              <a href="#" @href="plaster/view/{0}/raw?password={1} _id (** :password)">Raw</a>
+              <a href="#" @href="plaster/v/{0}/raw?password={1} (plaster::to-secure-id _id) (** :password)">Raw</a>
               <a href="#" @href="plaster/edit?annotate={0}&password={1} _id (** :password)">Annotate</a>
-              <a href="#" @href="plaster/edit/{0}?repaste&password={1} _id (** :password)">Repaste</a>
+              <a href="#" @href="plaster/e/{0}?repaste&password={1} (plaster::to-secure-id _id) (** :password)">Repaste</a>
             </c:when>
             <c:when test="(plaster::permitted-p :edit *)">
-              <a href="#" @href="plaster/edit/{0}?password={1} _id (** :password)">Edit</a>
+              <a href="#" @href="plaster/e/{0}?password={1} (plaster::to-secure-id _id) (** :password)">Edit</a>
             </c:when>
           </nav>
         </form>
@@ -70,12 +70,12 @@
                 <div name="text" class="text" placeholder="Paste something here" readonly
                      lquery="(text text)"></div>
                 <nav class="actions">
-                  <a href="#" @href="plaster/view/{0}/raw?password={1} _id (** :password)">Raw</a>
+                  <a href="#" @href="plaster/v/{0}/raw?password={1} (plaster::to-secure-id _id) (** :password)">Raw</a>
                   <c:when test="(plaster::permitted-p :new)">
-                    <a href="#" @href="plaster/edit/{0}?repaste&password={1} _id (** :password)">Repaste</a>
+                    <a href="#" @href="plaster/e/{0}?repaste&password={1} (plaster::to-secure-id _id) (** :password)">Repaste</a>
                   </c:when>
                   <c:when test="(plaster::permitted-p :edit *)">
-                    <a href="#" @href="plaster/edit/{0}?password={1} _id (** :password)">Edit</a>
+                    <a href="#" @href="plaster/e/{0}?password={1} (plaster::to-secure-id _id) (** :password)">Edit</a>
                   </c:when>
                 </nav>
               </form>

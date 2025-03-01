@@ -54,6 +54,16 @@
       (unless (eql user anonymous)
         (apply #'user:grant user (config :permissions :default))))))
 
+(defun to-secure-id (id)
+  ;; Multiply by prime to make the offsets less predictable
+  ;; And add a tiny hash to the base.
+  (let* ((id (* id 2521 (expt 36 4)))
+         (hash (logand (sxhash id) (1- (expt 36 4)))))
+    (write-to-string (+ id hash) :base 36)))
+
+(defun from-secure-id (id)
+  (db:ensure-id (truncate (parse-integer id :radix 36) (* 2521 (expt 36 4)))))
+
 (defun ensure-paste (paste-ish)
   (etypecase paste-ish
     (dm:data-model paste-ish)
@@ -157,10 +167,11 @@
 (defun paste-url (paste &optional (parent (paste-parent paste)))
   (let ((paste (ensure-paste paste)))
     (make-url :domains '("plaster")
-              :path (format NIL "view/~a"
-                            (if parent
-                                (dm:id parent)
-                                (dm:id paste)))
+              :path (format NIL "v/~a"
+                            (to-secure-id
+                             (if parent
+                                 (dm:id parent)
+                                 (dm:id paste))))
               :fragment (princ-to-string (dm:id paste)))))
 
 (defun check-password (paste password)

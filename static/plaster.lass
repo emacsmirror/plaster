@@ -144,7 +144,9 @@
              :align-items center
              :color #(main-fg)
              :font-weight normal
-             (.id :min-width 50px)
+             (.id :min-width 50px
+                  :font-family "monospace"
+                  :margin-right 1em)
              (.title :flex-grow 1))
           ("a:hover"
            :background (rgb 220 220 220)))))

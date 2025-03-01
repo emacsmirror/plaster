@@ -36,8 +36,8 @@
         </c:when>
         <ul iterate="pastes">
           <li>
-            <a href="#" @href="plaster/view/{0} _id">
-              <span class="id" lquery="(text _id)">ID</span>
+            <a href="#" @href="plaster/v/{0} (plaster::to-secure-id _id)">
+              <span class="id" lquery="(text (plaster::to-secure-id _id))">ID</span>
               <span class="title" lquery="(text title)">TITLE</span>
               <a rel="author" lquery="(text author)" @href="plaster/user/{0} author">AUTHOR</a>
               <time lquery="(time time)" />
