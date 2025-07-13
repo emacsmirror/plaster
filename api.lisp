@@ -2,7 +2,7 @@
 
 (defun api-paste-output (paste)
   (cond ((string= "true" (post/get "browser"))
-         (redirect (paste-url paste)))
+         (api-redirect (paste-url paste)))
         (T
          (api-output (reformat-paste paste)))))
 
@@ -71,7 +71,7 @@
     (check-password paste current-password)
     (delete-paste paste)
     (if (string= "true" (post/get "browser"))
-        (redirect (uri-to-url "plaster/edit"
-                              :representation :external
-                              :query '(("message" . "Paste deleted"))))
+        (api-redirect (uri-to-url "plaster/edit"
+                                  :representation :external
+                                  :query '(("message" . "Paste deleted"))))
         (api-output `(("_id" ,(dm:id paste)))))))
